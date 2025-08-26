@@ -15,10 +15,15 @@ for (f=file_find_first("*",fa_directory);f!="";f=file_find_next()) {
         if (file_exists(f+"\desktop.ini")) {
             d=file_text_open_read(f+"\desktop.ini")
             file_text_readln(d)
-            str=string_delete(file_text_read_string(d),1,15)
+            str=string_delete(file_text_read_string(d),1,13)
+            if (string_pos(".\",str)==1) str=string_delete(str,1,2)
             str=string_copy(str,1,string_length(str)-2)
             file_text_close(d)
             o.sprite_index=sprite_add(f+"\"+str,0,0,0,0,0)
+        } else {
+            fn=f+"\"+string_replace(f,"gm82","")+".ico"
+            if (file_exists(fn))
+                o.sprite_index=sprite_add(fn,0,0,0,0,0)
         }
         i+=1
     }
