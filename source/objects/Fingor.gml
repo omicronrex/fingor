@@ -22,12 +22,12 @@ for (f=file_find_first("*",fa_directory);f!="";f=file_find_next()) {
             file_text_close(d)
             o.sprite_index=sprite_add(f+"\"+str,0,0,0,0,0)
         } else {
-            //find icon called just the part after gm82
-            ico=string_replace(f,"gm82","")+".ico"
+            //find icon in default location
+            ico=f+".ico"
             fn=f+"\"+ico
             if (!file_exists(fn)) {
-                //not found: try full path name as icon
-                ico=f+".ico"
+                //not found: try removing gm82
+                ico=string_replace(f,"gm82","")+".ico"
                 fn=f+"\"+ico
             }
             if (file_exists(fn)) {
