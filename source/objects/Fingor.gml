@@ -13,6 +13,7 @@ for (f=file_find_first("*",fa_directory);f!="";f=file_find_next()) {
         o=instance_create(0,48+i*32,Github)
         o.name=f
         if (file_exists(f+"\desktop.ini")) {
+            //get icon from second line of desktop.ini
             d=file_text_open_read(f+"\desktop.ini")
             file_text_readln(d)
             str=string_delete(file_text_read_string(d),1,13)
@@ -21,9 +22,20 @@ for (f=file_find_first("*",fa_directory);f!="";f=file_find_next()) {
             file_text_close(d)
             o.sprite_index=sprite_add(f+"\"+str,0,0,0,0,0)
         } else {
-            fn=f+"\"+string_replace(f,"gm82","")+".ico"
-            if (file_exists(fn))
+            //find icon called just the part after gm82
+            ico=string_replace(f,"gm82","")+".ico"
+            fn=f+"\"+ico
+            if (!file_exists(fn)) {
+                //not found: try full path name as icon
+                ico=f+".ico"
+                fn=f+"\"+ico
+            }
+            if (file_exists(fn)) {
                 o.sprite_index=sprite_add(fn,0,0,0,0,0)
+                //fix folder icon
+                file_text_write_all(f+"\desktop.ini","[.ShellClassInfo]"+chr_crlf+"IconResource=.\"+ico+",0")
+                execute_program_silent("cmd /c attrib +r "+'"'+f+'"')
+            }
         }
         i+=1
     }
